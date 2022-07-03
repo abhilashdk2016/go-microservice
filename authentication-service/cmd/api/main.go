@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"githuub.com/abhilashdk2016/go-microservice/authentication/data"
+	"github.com/abhilashdk2016/go-microservice/authentication/data"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"

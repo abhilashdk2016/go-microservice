@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"net/rpc"
 	"time"
 
 	"github.com/abhilashdk2016/go-microservice/log-service/data"
@@ -47,7 +49,8 @@ func main() {
 		Models: data.New(client),
 	}
 
-	//go app.serve()
+	err = rpc.Register(new(RPCServer))
+	go app.rpcListen()
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
@@ -59,18 +62,22 @@ func main() {
 	}
 }
 
-// func (app *Config) serve() {
-// 	srv := &http.Server{
-// 		Addr:    fmt.Sprintf(":%s", webPort),
-// 		Handler: app.routes(),
-// 	}
+func (app *Config) rpcListen() error {
+	log.Println("Starting RPC Server on port ", rpcPort)
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", rpcPort))
+	if err != nil {
+		return err
+	}
+	defer listen.Close()
+	for {
+		rpcConn, err := listen.Accept()
+		if err != nil {
+			continue
+		}
 
-// 	err := srv.ListenAndServe()
-// 	if err != nil {
-// 		log.Panic(err)
-// 	}
-// 	log.Println("Started Logger")
-// }
+		go rpc.ServeConn(rpcConn)
+	}
+}
 
 func connectToMongo() (*mongo.Client, error) {
 	clientOptions := options.Client().ApplyURI(mongoURL)

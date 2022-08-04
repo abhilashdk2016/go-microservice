@@ -1,7 +1,0 @@
-make: Entering directory `/Users/abhilashdk/Desktop/Projects/Go/golang-microservices'
-echo "Starting Docker images..."
-docker-compose up -d
-echo "Docker images started!"
- 
-make: Leaving directory `/Users/abhilashdk/Desktop/Projects/Go/golang-microservices'
- 
